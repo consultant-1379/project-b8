@@ -1,0 +1,38 @@
+version: "3"
+services:
+  web:
+    build: ./gitrepomining-frontend
+    ports:
+     - "3000:3000"
+    networks:
+     - mybridge
+    depends_on:
+      - "backend"
+  backend:
+    build: ./java/java_git_analyzer
+    ports:
+     - "8080:8080"
+    networks:
+     - mybridge
+    depends_on:
+      - "mongo"
+      - "scanner"
+  scanner:
+    build: ./python
+    environment:
+      PYTHONUNBUFFERED: 1
+    ports:
+     - "5000:5000"
+    volumes:
+     - ./python/repos:/repos
+    networks:
+     - mybridge
+    depends_on:
+      - "mongo"
+  mongo:
+    image : mongo
+    networks:
+     - mybridge
+
+networks:
+  mybridge:
